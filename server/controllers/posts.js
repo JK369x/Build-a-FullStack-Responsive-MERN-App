@@ -9,8 +9,9 @@ export const createPost = async (req, res) => {
       userId,
       firstName: user.firstName,
       lastName: user.lastName,
+      location: user.location,
       description,
-      userPicturePatch: user.picturePath,
+      userPicturePath: user.picturePath,
       picturePath,
       likes: {},
       comments: [],
@@ -24,13 +25,13 @@ export const createPost = async (req, res) => {
   }
 };
 
-//! READ
+/* READ */
 export const getFeedPosts = async (req, res) => {
   try {
     const post = await Post.find();
     res.status(200).json(post);
   } catch (err) {
-    res.status(409).json({ message: err.message });
+    res.status(404).json({ message: err.message });
   }
 };
 
@@ -40,11 +41,11 @@ export const getUserPosts = async (req, res) => {
     const post = await Post.find({ userId });
     res.status(200).json(post);
   } catch (err) {
-    res.status(409).json({ message: err.message });
+    res.status(404).json({ message: err.message });
   }
 };
 
-//!UPDATE
+/* UPDATE */
 export const likePost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -58,13 +59,14 @@ export const likePost = async (req, res) => {
       post.likes.set(userId, true);
     }
 
-    const updatePost = await Post.findByIdAndUpdate(
+    const updatedPost = await Post.findByIdAndUpdate(
       id,
       { likes: post.likes },
       { new: true }
     );
-    res.status(200).json(updatePost);
+
+    res.status(200).json(updatedPost);
   } catch (err) {
-    res.status(409).json({ message: err.message });
+    res.status(404).json({ message: err.message });
   }
 };
